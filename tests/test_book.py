@@ -1,3 +1,4 @@
+import pytest
 from models.book import Book
 
 
@@ -14,3 +15,12 @@ def test_create_book():
     assert book.isbn == "9780385474542"
     assert book.category == "Fiction"
     assert book.availability == "Available"
+
+def test_book_requires_title():
+    with pytest.raises(ValueError):
+        Book(
+            "",
+            "Chinua Achebe",
+            "9780385474542",
+            "Fiction"
+        )
