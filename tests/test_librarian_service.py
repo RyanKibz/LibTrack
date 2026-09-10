@@ -58,3 +58,10 @@ def librarian_can_view_catalogue():
     books = service.view_catalogue()
 
     assert len(books) == 2
+
+def test_empty_catalogue_returns_empty_list():
+    manage = LibrarianService()
+
+    books = manage.view_catalogue()
+
+    assert books == []
