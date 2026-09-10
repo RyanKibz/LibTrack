@@ -15,7 +15,7 @@ def test_register_new_client_success(existing_users):
 
 def test_register_fails_on_duplicate_username(existing_users):
     result = register_client(
-        username="jdoe",
+        username="jeff",
         email="different@example.com",
         password="StrongPass123",
         existing_users=existing_users,
@@ -27,7 +27,7 @@ def test_register_fails_on_duplicate_username(existing_users):
 def test_register_fails_on_duplicate_email(existing_users):
     result = register_client(
         username="differentuser",
-        email="jdoe@example.com",
+        email="jeff@gmail.com",
         password="StrongPass123",
         existing_users=existing_users,
     )
