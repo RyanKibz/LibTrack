@@ -40,7 +40,12 @@ def sample_books(sample_libraries):
 
 @pytest.fixture
 def existing_users():
-    """Pre-registered users to test uniqueness checks against."""
+    """Pre-registered users to test uniqueness checks against.
+
+    Matches the values used in clientauthentication_test.py's duplicate
+    tests (username="jeff", email="jeff@gmail.com") so those tests
+    actually exercise the duplicate-detection logic.
+    """
     return [
-        {"username": "jdoe", "email": "jdoe@example.com", "password": "hashed_pw_here"},
+        {"username": "jeff", "email": "jeff@gmail.com", "password": "hashed_pw_here"},
     ]
