@@ -1,57 +1,65 @@
 import json
 
-class LibraryDiscovery:
-    """Handles displaying search results, formatting availability, and showing library details."""
-    def __init__(self, libraries_file="data/libraries.json"):
-        self.libraries_file = libraries_file
 
-    def load_libraries(self):
+class LibraryDiscovery:
+    """Handles displaying books and their library information."""
+
+    def __init__(self, branches_file="branches.json"):
+        self.branches_file = branches_file
+
+    def load_branches(self):
         try:
-            with open(self.libraries_file, 'r') as f:
-                data = json.load(f)
-                return {lib['id']: lib for lib in data}
+            with open(self.branches_file, "r") as file:
+                data = json.load(file)
+                return data.get("branches", [])
+
         except (FileNotFoundError, json.JSONDecodeError):
-            return {}
+            return []
+
+    def get_branch_name(self, branch_id):
+        branches = self.load_branches()
+
+        for branch in branches:
+            if branch.get("id") == branch_id:
+                return branch.get("name", "Unknown Library")
+
+        return "Unknown Library"
 
     def display_results(self, search_results):
-        """Prints formatted search results and availability matrix."""
         if not search_results:
-            print("\nNo libraries found matching your search query.")
+            print("\nNo books found matching your search.")
             return
+
+        print("\n--- SEARCH RESULTS ---")
 
         for book in search_results:
-            print(f"\nTitle:  {book.get('title', 'N/A')}")
-            print(f"Author: {book.get('author', 'N/A')} | ISBN: {book.get('isbn', 'N/A')}")
-            print("-" * 48)
-            print(f"{'Library':<28} {'Availability':<20}")
-            print("-" * 48)
-            for lib_status in book.get('libraries', []):
-                status = "Available" if lib_status.get('available') else "Not Available"
-                print(f"{lib_status.get('name', 'N/A'):<28} {status:<20}")
-            print("-" * 48)
+            branch_id = book.get("branch_id", "N/A")
+            branch_name = self.get_branch_name(branch_id)
 
-    def view_library_details(self, library_id):
-        """Displays full information for a specific library ID."""
-        libraries = self.load_libraries()
-        lib = libraries.get(library_id)
+            print("\n" + "-" * 50)
+            print(f"Title: {book.get('title', 'N/A')}")
+            print(f"Author: {book.get('author', 'N/A')}")
+            print(f"ISBN: {book.get('isbn', 'N/A')}")
+            print(f"Category: {book.get('category', 'N/A')}")
+            print(f"Library: {branch_name}")
+            print(f"Branch ID: {branch_id}")
+            print(f"Availability: {book.get('availability', 'Unknown')}")
 
-        if not lib:
-            print(f"\nLibrary ID '{library_id}' not found.")
-            return
+        print("-" * 50)
 
-        print("=" * 48)
+    def view_library_details(self, branch_id):
+        branches = self.load_branches()
 
+        for branch in branches:
+            if branch.get("id") == branch_id:
+                print("\n--- LIBRARY DETAILS ---")
+                print(f"Branch ID: {branch.get('id', 'N/A')}")
+                print(f"Name: {branch.get('name', 'N/A')}")
 
-# NO INDENTATION - Start completely flush against the left margin:
-if __name__ == "__main__":
-    discovery = LibraryDiscovery()
+                if branch.get("location"):
+                    print(f"Location: {branch.get('location')}")
 
-    print("Testing LibraryDiscovery class directly...")
-    sample_data = [{
-        "title": "Atomic Habits",
-        "author": "James Clear",
-        "isbn": "978038547542",
-        "libraries": [{"name": "Nairobi Central", "available": True}]
-    }]
-    discovery.display_results(sample_data)
-       
+                return branch
+
+        print(f"\nLibrary with Branch ID '{branch_id}' not found.")
+        return None
