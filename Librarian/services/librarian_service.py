@@ -1,5 +1,5 @@
 import json
-from models.book import Book
+from Librarian.models.book import Book
 
 
 
@@ -21,7 +21,8 @@ class LibrarianService:
                         item["title"],
                         item["author"],
                         item["isbn"],
-                        item["category"]
+                        item["category"],
+                        item["branch_id"]
                     )
 
                     book.availability = item["availability"]
@@ -39,12 +40,19 @@ class LibrarianService:
         with open(self.data_file, "w") as file:
             json.dump(data, file, indent=4)
 
-    def add_book(self, title, author, isbn, category):
+    def add_book(
+        self,
+        title,
+        author,
+        isbn,
+        category,
+        branch_id
+    ):
         for book in self.books:
             if book.isbn == isbn:
                 raise ValueError("A book with this ISBN already exists")
 
-        book = Book(title, author, isbn, category)
+        book = Book(title, author, isbn, category, branch_id)
         self.books.append(book)
 
         self.save_books()
